@@ -1,0 +1,75 @@
+const {TodoModel} = require('../models/todo.model')
+
+async function createTodo(req, res) {
+  const {title, description, status} = req.body;
+
+  try {
+    const newTodo = new TodoModel({
+      title, // title: title
+      description,
+      status
+    })
+    await newTodo.save();
+    res.send({
+      message: 'Todo has been created'
+    })
+  } catch (error) {
+    res.status(400).send({
+      message: error
+    })
+  }
+}
+
+async function getTodos(req, res) {
+  console.log(req.query);
+  try {
+    const todos = await TodoModel.find({ status: req.query.status });
+    res.send(todos)
+  } catch (error) {
+    res.status(500).send({
+      message: error.message
+    })
+  }
+}
+
+async function getTodo(req, res) {
+  const {id} = req.params;
+  try {
+    const todo = await TodoModel.findOne({ _id: id })
+    if (!todo) {
+      return res.send({
+        message: 'Todo not found'
+      })
+    }
+    res.send(todo)
+  } catch (error) {
+    res.status(500).send({
+      message: error.message
+    })
+  }
+}
+
+async function updateStatus(req, res) {
+  const {id} = req.params;
+  const {status} = req.body;
+
+  try {
+    await TodoModel.findOneAndUpdate({_id: id}, { status })
+    // todo.status = status;
+    // await todo.save();
+    res.send({
+      message: 'Status has been updated'
+    })
+  } catch (error) {
+    res.status(500).send({
+      error: error.message
+    })
+  }
+}
+
+module.exports = {
+  createTodo,
+  getTodos,
+  getTodo,
+  updateStatus
+}
