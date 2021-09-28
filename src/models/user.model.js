@@ -1,22 +1,24 @@
 const {Schema, model, Types} = require('mongoose');
+
 const schema = new Schema({
-  title: {
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
     type: String,
     required: true
   },
-  description: {
+  fullName: {
     type: String
   },
-  status: {
-    type: String,
-    default: 'OPEN'
-  },
-  assignedTo: {
+  todos: [{
     type: Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'Todo'
+  }]
 })
 
 module.exports = {
-  TodoModel: model('Todo', schema)
+  UserModel: model('User', schema)
 }

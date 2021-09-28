@@ -1,13 +1,14 @@
 const {TodoModel} = require('../models/todo.model')
 
 async function createTodo(req, res) {
-  const {title, description, status} = req.body;
+  const {title, description, status, userId} = req.body;
 
   try {
     const newTodo = new TodoModel({
       title, // title: title
       description,
-      status
+      status,
+      assignedTo: userId
     })
     await newTodo.save();
     res.send({
@@ -22,8 +23,9 @@ async function createTodo(req, res) {
 
 async function getTodos(req, res) {
   console.log(req.query);
+  console.log(req.user);
   try {
-    const todos = await TodoModel.find({ status: req.query.status });
+    const todos = await TodoModel.find({ status: req.query.status, assignedTo: req.user.userId });
     res.send(todos)
   } catch (error) {
     res.status(500).send({
