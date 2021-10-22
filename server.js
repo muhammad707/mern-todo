@@ -12,7 +12,16 @@ require("dotenv").config();
 
 app.use('/auth', authRouter);
 app.use("/api/todo", checkUser, todoRouter);
-app.use('/api/user', checkUser, userRouter);
+app.use('/api/users', checkUser, userRouter);
+
+app.use(function(err, req, res, next) {
+
+  console.log('[Global error middleware]', err);
+  res.status(500).send({
+    message: err.message
+  })
+  next();
+})
 
 const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, connectDb);

@@ -1,10 +1,11 @@
 const { Router } = require("express");
+const { upload } = require('../middlewares/multer.middleware')
 
-const { createUser } = require("../contollers/user.controller");
+const { createUser, getUsers } = require("../contollers/user.controller");
 
 const router = Router();
-
-router.post('/create', createUser)
+router.get('/', getUsers)
+router.post('/create', upload.any(), createUser)
 
 module.exports = {
   userRouter: router

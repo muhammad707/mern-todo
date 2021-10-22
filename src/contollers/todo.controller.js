@@ -15,9 +15,7 @@ async function createTodo(req, res) {
       message: 'Todo has been created'
     })
   } catch (error) {
-    res.status(400).send({
-      message: error
-    })
+    throw error;
   }
 }
 
@@ -25,7 +23,7 @@ async function getTodos(req, res) {
   console.log(req.query);
   console.log(req.user);
   try {
-    const todos = await TodoModel.find({ status: req.query.status, assignedTo: req.user.userId });
+    const todos = await TodoModel.find({ status: req.query.status, assignedTo: req.user.userId }).populate('assignedTo', 'email')
     res.send(todos)
   } catch (error) {
     res.status(500).send({
